@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat App</title>
+
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body{
+        background: #f0f2f5;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .chat-container{
+        width: 100%;
+        max-width: 430px;
+        height: 100vh;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0;
+    }
+
+    .chat-header{
+        background: #0d6efd;
+        padding: 15px;
+        color: white;
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .messages-box{
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        background: #e9ecef;
+    }
+
+    .message{
+        max-width: 80%;
+        padding: 10px 14px;
+        margin: 6px 0;
+        border-radius: 12px;
+        font-size: 15px;
+    }
+
+    .sent{
+        background: #0d6efd;
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 0;
+    }
+
+    .received{
+        background: #ffffff;
+        color: #333;
+        margin-right: auto;
+        border-bottom-left-radius: 0;
+    }
+
+    /* Typing animation bubble */
+    .typing{
+        font-size: 14px;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 12px;
+        width: fit-content;
+        margin-top: 5px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-right: auto;
+    }
+
+    .dot{
+        width: 6px;
+        height: 6px;
+        background: #888;
+        border-radius: 50%;
+        animation: blink 1.3s infinite;
+    }
+    .dot:nth-child(2){ animation-delay: 0.2s; }
+    .dot:nth-child(3){ animation-delay: 0.4s; }
+
+    @keyframes blink{
+        0%{ opacity: 0.2; }
+        50%{ opacity: 1; }
+        100%{ opacity: 0.2; }
+    }
+
+    .input-area{
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #ccc;
+    }
+
+    .input-area input{
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        outline: none;
+        font-size: 16px;
+    }
+
+    .input-area button{
+        margin-left: 8px;
+        padding: 12px 18px;
+        background: #0d6efd;
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+
+    <div class="chat-header">Chat Window</div>
+
+    <div class="messages-box" id="messagesBox"></div>
+
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+
+</div>
+
+<script>
+function sendMessage(){
+    let input = document.getElementById("messageInput");
+    let msg = input.value.trim();
+    if(msg === "") return;
+
+    let box = document.getElementById("messagesBox");
+
+    // User Sent Message
+    let sent = document.createElement("div");
+    sent.classList.add("message", "sent");
+    sent.innerText = msg;
+    box.appendChild(sent);
+    box.scrollTop = box.scrollHeight;
+
+    input.value = "";
+
+    // Show typing animation
+    showTypingIndicator();
+
+    setTimeout(() => {
+        autoReply(msg);
+    }, 1500);
+}
+
+function showTypingIndicator(){
+    let box = document.getElementById("messagesBox");
+
+    let typing = document.createElement("div");
+    typing.setAttribute("id", "typingIndicator");
+    typing.classList.add("typing");
+
+    typing.innerHTML = `
+        Bot is typing 
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    `;
+
+    box.appendChild(typing);
+    box.scrollTop = box.scrollHeight;
+}
+
+function removeTypingIndicator(){
+    let typing = document.getElementById("typingIndicator");
+    if(typing){
+        typing.remove();
+    }
+}
+
+function autoReply(userMsg){
+    removeTypingIndicator();
+
+    let box = document.getElementById("messagesBox");
+    let replyText = "I received: " + userMsg;
+
+    if(userMsg.toLowerCase().includes("hi") || userMsg.toLowerCase().includes("hello")){
+        replyText = "Hello! How can I assist you today?";
+    }
+
+    if(userMsg.toLowerCase().includes("bye")){
+        replyText = "Goodbye! Take care.";
+    }
+
+    let reply = document.createElement("div");
+    reply.classList.add("message", "received");
+    reply.innerText = replyText;
+
+    box.appendChild(reply);
+    box.scrollTop = box.scrollHeight;
+}
+</script>
+
+</body>
+</html>
+

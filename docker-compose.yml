@@ -1,25 +1,8 @@
-version: "3.8"
-
+version: "3"
 services:
   chat-service:
-    build: ./chat-service
-    container_name: chat-service
-    depends_on:
-      - redis
+    build: ./server
     ports:
       - "3000:3000"
-
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-
-  nginx:
-    build: ./nginx
-    container_name: nginx
-    ports:
-      - "80:80"
-    depends_on:
-      - chat-service
+    restart: always
 
